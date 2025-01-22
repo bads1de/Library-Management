@@ -11,6 +11,7 @@ interface Book {
   coverUrl: string;
   videoUrl: string;
   summary: string;
+  isLoanedBook?: boolean;
   createdAt: Date | null;
 }
 

@@ -39,6 +39,16 @@ const AuthForm = <T extends FieldValues>({
   onSubmit,
   type,
 }: Props<T>) => {
+  const router = useRouter();
+  const isSignIn = type === "SIGN_IN";
+
+  const form: UseFormReturn<T> = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: defaultValues as DefaultValues<T>,
+  });
+
+  const handleSubmit: SubmitHandler<T> = async (data) => {};
+
   return (
     <div>
       <h1>Auth Form</h1>

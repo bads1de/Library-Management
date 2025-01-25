@@ -7,13 +7,13 @@ import { eq } from "drizzle-orm";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
-    strategy: "jwt", // JWTを使用してセッションを管理
+    strategy: "jwt",
   },
   providers: [
     CredentialsProvider({
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null; // メールアドレスまたはパスワードが未入力の場合
+          return null;
         }
 
         const user = await db
@@ -22,14 +22,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           .where(eq(users.email, credentials.email.toString()))
           .limit(1);
 
-        if (user.length === 0) return null; // ユーザーが見つからない場合
+        if (user.length === 0) return null;
 
         const isPasswordValid = await compare(
           credentials.password.toString(),
           user[0].password
         );
 
-        if (!isPasswordValid) return null; // パスワードが一致しない場合
+        if (!isPasswordValid) return null;
 
         return {
           id: user[0].id.toString(),
@@ -40,21 +40,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     }),
   ],
   pages: {
-    signIn: "/sign-in", // サインインページのパス
+    signIn: "/sign-in",
   },
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        token.id = user.id; // トークンにユーザーIDを設定
-        token.name = user.name; // トークンにユーザー名を設定
+        token.id = user.id;
+        token.name = user.name;
       }
 
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string; // セッションにユーザーIDを設定
-        session.user.name = token.name as string; // セッションにユーザー名を設定
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
       }
 
       return session;

@@ -9,7 +9,13 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import config from "@/lib/config";
 import ratelimit from "../ratelimit";
+import { workflowClient } from "../workflow";
 
+/**
+ * クレデンシャルを使用してサインインします。
+ * @param params - メールアドレスとパスワードを含むパラメータ
+ * @returns - サインインの成功または失敗を示すオブジェクト
+ */
 export const signInWithCredentials = async (
   params: Pick<AuthCredentials, "email" | "password">
 ) => {
@@ -33,6 +39,11 @@ export const signInWithCredentials = async (
   }
 };
 
+/**
+ * ユーザーをサインアップします。
+ * @param params - フルネーム、メールアドレス、パスワード、大学ID、大学カードを含むパラメータ
+ * @returns - サインアップの成功または失敗を示すオブジェクト
+ */
 export const signUp = async (params: AuthCredentials) => {
   const { fullName, email, password, universityId, universityCard } = params;
 
@@ -65,6 +76,14 @@ export const signUp = async (params: AuthCredentials) => {
       universityId,
       password: hashedPassword,
       universityCard,
+    });
+
+    await workflowClient.trigger({
+      url: `${config.env.prodApiEndpoint}/api/workflows/onboarding`,
+      body: {
+        email,
+        fullName,
+      },
     });
 
     await signInWithCredentials({ email, password });

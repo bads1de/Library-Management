@@ -50,6 +50,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "dayjs": "^1.11.13",
     "dotenv": "^16.4.7",
     "drizzle-orm": "^0.38.4",
     "embla-carousel-react": "^8.5.2",
